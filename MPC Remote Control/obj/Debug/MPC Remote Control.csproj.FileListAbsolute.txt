@@ -1,0 +1,7 @@
+c:\users\sean\documents\visual studio 2012\Projects\MPC Remote Control\MPC Remote Control\bin\Debug\MPC Remote Control.exe.config
+C:\Users\Sean\Documents\Visual Studio 2012\Projects\MPC-Remote-Control\MPC Remote Control\bin\Debug\MPC Remote Control.exe.config
+C:\Users\Sean\Documents\Visual Studio 2012\Projects\MPC-Remote-Control\MPC Remote Control\bin\Debug\MPC Remote Control.exe
+C:\Users\Sean\Documents\Visual Studio 2012\Projects\MPC-Remote-Control\MPC Remote Control\bin\Debug\MPC Remote Control.pdb
+C:\Users\Sean\Documents\Visual Studio 2012\Projects\MPC-Remote-Control\MPC Remote Control\obj\Debug\MPC Remote Control.csprojResolveAssemblyReference.cache
+C:\Users\Sean\Documents\Visual Studio 2012\Projects\MPC-Remote-Control\MPC Remote Control\obj\Debug\MPC Remote Control.exe
+C:\Users\Sean\Documents\Visual Studio 2012\Projects\MPC-Remote-Control\MPC Remote Control\obj\Debug\MPC Remote Control.pdb
