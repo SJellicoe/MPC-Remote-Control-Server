@@ -10,9 +10,9 @@ namespace MPC_Remote_Control
     {
         static void Main(string[] args)
         {
-            Controller c = new Controller();
+            Server server = new Server();
 
-            c.Mute();
+            server.Listen();
         }
     }
 }

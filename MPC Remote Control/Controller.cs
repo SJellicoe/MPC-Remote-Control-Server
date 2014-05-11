@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,16 +11,6 @@ namespace MPC_Remote_Control
 {
     class Controller
     {
-        const uint WM_KEYDOWN = 0x0100;
-        const int VK_SPACE = 0x20;
-        const int VK_PRIOR = 0x21;
-        const int VK_NEXT = 0x22;
-        const int VK_UP = 0x26;
-        const int VK_DOWN = 0x28;
-        const int VK_DECIMAL = 0x6E;
-
- 
- 
         [DllImport("user32.dll")]
         static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
         
@@ -29,34 +20,38 @@ namespace MPC_Remote_Control
             switch (command)
             {
                 case "Play/Pause":
-                    SendKey(VK_SPACE);
+                    SendKey(Constants.VK_SPACE);
                     break;
                 case "Stop":
-                    SendKey(VK_DECIMAL);
+                    SendKey(Constants.VK_DECIMAL);
                     break;
                 case "Volume Up":
-                    SendKey(VK_UP);
+                    SendKey(Constants.VK_UP);
                     break;
                 case "Volume Down":
-                    SendKey(VK_DOWN);
+                    SendKey(Constants.VK_DOWN);
                     break;
                 case "Next":
-                    SendKey(VK_NEXT);
+                    SendKey(Constants.VK_NEXT);
                     break;
                 case "Previous":
-                    SendKey(VK_PRIOR);
+                    SendKey(Constants.VK_PRIOR);
                     break;
             }
         }
 
         private void SendKey(int VK_KEY)
         {
-            Process[] mpc = Process.GetProcessesByName("mpc-hc");
+            Process[] mpc = Process.GetProcessesByName(Constants.PROCESS);
 
-            if (mpc.Length == 0) return;
+            if (mpc.Length == 0)
+            {
+                Console.WriteLine(Constants.PROCESS_NOT_RUNNING_ERROR);
+                return;
+            }
             if (mpc[0] != null)
             {
-                PostMessage(mpc[0].MainWindowHandle, WM_KEYDOWN, VK_KEY, 0);
+                PostMessage(mpc[0].MainWindowHandle, Constants.WM_KEYDOWN, VK_KEY, 0);
             }
         }
 
