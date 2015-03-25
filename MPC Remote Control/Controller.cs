@@ -11,10 +11,14 @@ namespace MPC_Remote_Control
 {
     class Controller
     {
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", EntryPoint = "PostMessageA", SetLastError = true)]
         static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
-        
 
+        /**************************************************
+         * Function: ParseMessage
+         * Input: command - string of the command you want to happen
+         * Description: Uses PostMessage to send values to the specified process in constants
+         * ************************************************/
         public void ParseMessage(string command)
         {
             switch (command)
@@ -40,6 +44,11 @@ namespace MPC_Remote_Control
             }
         }
 
+        /**************************************************
+         * Function: SendKey
+         * Input: VK_KEY - int of value to be sent
+         * Description: Uses PostMessage to send values to the specified process in constants
+         * ************************************************/
         private void SendKey(int VK_KEY)
         {
             Process[] mpc = Process.GetProcessesByName(Constants.PROCESS);
@@ -51,6 +60,7 @@ namespace MPC_Remote_Control
             }
             if (mpc[0] != null)
             {
+                
                 PostMessage(mpc[0].MainWindowHandle, Constants.WM_KEYDOWN, VK_KEY, 0);
             }
         }

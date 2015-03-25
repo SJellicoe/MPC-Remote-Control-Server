@@ -17,7 +17,7 @@ namespace MPC_Remote_Control
         public const int VK_DOWN = 0x28;
         public const int VK_DECIMAL = 0x6E;
 
-        public const string PROCESS = "mpc-hc";
+        public const string PROCESS = "mpc-hc64";
         public const string PROCESS_NOT_RUNNING_ERROR = "MPC is not running.";
         public const string INVALID_IP_CHOICE_ERROR = "Your IP selection was invalid.";
         

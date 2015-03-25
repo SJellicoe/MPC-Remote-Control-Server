@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace MPC_Remote_Control
 {
@@ -13,9 +15,12 @@ namespace MPC_Remote_Control
     {
         private IPEndPoint serverEndPoint;
         private TcpListener listener;
-        private bool done = false;        
         private Controller controller = new Controller();
 
+        /**************************************************
+         * Function: Server()
+         * Description: Constructor to set up the ip for the server to listen on
+         * ************************************************/
         public Server()
         {
             int index = 0;
@@ -61,28 +66,47 @@ namespace MPC_Remote_Control
             Console.Clear();
             //Display the IP address to connect to
             Console.WriteLine("Connect to this IP address: " + serverEndPoint.Address.ToString());
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://glacial-fjord-1021.herokuapp.com/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                string internalIP = myIP.ToString();
+                string apiQuery = "register?internalIP=" + internalIP;
+
+                HttpResponseMessage response = client.GetAsync(apiQuery).Result;
+            }
         }
 
+        /**************************************************
+         * Function: Listen
+         * Description: Sets up a listener to accept connections and loops infinitely.
+         *              On accept, it spawns a thread to deal with the communication
+         * ************************************************/
         public void Listen()
         {
             //Begin listening
             listener.Start();
 
-            while (!done)
+            while (true)
             {
                 //Assign the accepted socket
                 Socket client = listener.AcceptSocket();
                 //Create thread for communication
-                Console.WriteLine("You've Connected!");
                 Thread communication = new Thread(() => Communication(client));
                 //Start thread
                 communication.Start();
             }
 
-            //Stop Listening
-            listener.Stop();
         }
 
+        /**************************************************
+         * Function: Communication
+         * Input: client - Socket for the client that connected to the server
+         * Description: Reads the message sent by the client and calls the parser on the controller
+         * ************************************************/
         public void Communication(Socket client)
         {
             int bufferLength = 20;
@@ -91,46 +115,32 @@ namespace MPC_Remote_Control
             ASCIIEncoding encoder = new ASCIIEncoding();
             int messageLength;
 
-            bool exit = false;
-
-            while (!exit)
+            try
             {
-                try
+                //blocking read will wait until a message is sent
+                client.Receive(buffer);
+                //convert the byte array we received to a string
+                message = encoder.GetString(buffer);
+
+                //loop to find first occurence of a null character
+                for (messageLength = 0; message[messageLength] != '\0'; messageLength++)
                 {
-                    //blocking read will wait until a message is sent
-                    client.Receive(buffer);
-                    //convert the byte array we received to a string
-                    message = encoder.GetString(buffer);
-
-                    //loop to find first occurence of a null character
-                    for (messageLength = 0; message[messageLength] != '\0'; messageLength++)
-                    {
-                    }
-
-                    //remove the null characters from the message
-                    message = message.Substring(0, messageLength - 1);
-
-                    if (message.Equals("Exit"))
-                    {
-                        exit = true;
-                    }
-                    else
-                    {
-                        controller.ParseMessage(message);
-                    }
-
                 }
-                catch (Exception e)
-                {
-                    client.Close();
-                    exit = true;
-                }
+
+                //remove the null characters from the message
+                message = message.Substring(0, messageLength);
+
+                controller.ParseMessage(message);
             }
+            catch (Exception)
+            {
+                client.Close();
+            }
+            
             if (client != null)
             {
                 client.Close();
             }
-
         }
 
     }
